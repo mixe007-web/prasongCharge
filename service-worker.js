@@ -2,7 +2,7 @@
 // ⚡ AC-EV-Charging-Time Service Worker (Fixed v2)
 // ===============================
 
-const CACHE_NAME = 'ev-time-calculator-v2';
+const CACHE_NAME = 'ev-time-calculator-v1';
 const urlsToCache = [
   './index.html',
   './AC-EV-Charging-Time.html',
