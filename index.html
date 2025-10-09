@@ -6,32 +6,18 @@
   <title>AC-EV-Charging-Time</title>
 
   <!-- ✅ PWA Manifest -->
-  <link rel="manifest" href="manifest.json" />
+  <link rel="manifest" href="./manifest.json" />
 
   <!-- ✅ Icons -->
-  <link rel="icon" href="icon-192.png" type="image/png" />
-  <link rel="apple-touch-icon" href="icon-512.png" />
+  <link rel="icon" href="./icon-192.png" type="image/png" />
+  <link rel="apple-touch-icon" href="./icon-512.png" />
 
-  <!-- ✅ Meta -->
   <meta name="theme-color" content="#0d6efd" />
   <meta name="description" content="AC-EV-Charging-Time Progressive Web App" />
-
-  <style>
-    body {
-      font-family: sans-serif;
-      background: #f8f9fa;
-      color: #333;
-      text-align: center;
-      margin-top: 40vh;
-    }
-  </style>
 </head>
 
 <body>
-  <noscript>⚠ ต้องเปิดใช้งาน JavaScript เพื่อให้เว็บทำงานได้</noscript>
-
-  <!-- Loader -->
-  <div id="loading">
+  <div id="loading" style="text-align:center; margin-top:40vh;">
     <h3>⚡ กำลังโหลด AC-EV-Charging-Time...</h3>
   </div>
 
@@ -39,21 +25,20 @@
     // ✅ โหลด Service Worker ก่อนเข้าแอป
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker
-        .register('service-worker.js')
+        .register('./service-worker.js')
         .then(() => {
-          console.log('[SW] Registered ✅');
-          // รอให้ service worker ติดก่อน redirect
+          console.log('[SW] Registered');
           setTimeout(() => {
-            window.location.href = 'AC-EV-Charging-Time.html';
+            // ไปหน้าแอปหลัก
+            window.location.href = './AC-EV-Charging-Time.html';
           }, 800);
         })
         .catch(err => {
-          console.warn('[SW] Failed ❌', err);
-          window.location.href = 'AC-EV-Charging-Time.html';
+          console.warn('[SW] Failed', err);
+          window.location.href = './AC-EV-Charging-Time.html';
         });
     } else {
-      // ถ้า browser ไม่รองรับ SW ก็เปิดหน้า app ตรงๆ
-      window.location.href = 'AC-EV-Charging-Time.html';
+      window.location.href = './AC-EV-Charging-Time.html';
     }
   </script>
 </body>

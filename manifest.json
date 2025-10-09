@@ -1,9 +1,8 @@
 {
-  "name": "EV Time Calculator",
-  "short_name": "EV Charge",
-  "description": "Calculate electric vehicle charging time easily.",
-  "start_url": "/AC-EV-Charging-Time.html",
-  "scope": "/",
+  "name": "AC-EV-Charging-Time",
+  "short_name": "AC-EV",
+  "start_url": "./AC-EV-Charging-Time.html",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#121212",
   "theme_color": "#007bff",
