@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EV Time Calculator</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#28a745">
+  <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png" />
+  <link rel="apple-touch-icon" sizes="512x512" href="./icon-512.png" />
+  <meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="EV Charge">
+  <style>
+body {
+  font-family: 'Arial', sans-serif;
+  background: linear-gradient(135deg, #c9d4cc, #c8e6c9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+}
+	.container {
+	background-color: #e6f4ea; 
+	border-radius: 12px;
+	padding: 2rem;
+	box-shadow: 0 6px 25px rgba(0, 100, 0, 0.1); 
+	width: 380px;
+	text-align: center;
+	backdrop-filter: blur(5px);
+}
+   @keyframes rainbowText {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+	h2 {
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 700;
+  font-size: 2rem;
+  text-align: center;
+  background: linear-gradient(270deg, #ff6ec4, #7873f5, #42e695, #f9d423);
+  background-size: 600% 600%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: rainbowText 8s ease infinite;
+}
+    img {
+      width: 100%;
+      border-radius: 10px;
+      margin-bottom: 1.5rem;
+}
+    label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #444;
+  transition: color 0.3s ease;
+  
+}
+	input, select {
+  background-color: #e9f2eb; 
+  border: 1.5px solid #007acc; 
+  border-radius: 4px; 
+  padding: 8px 10px; 
+  box-sizing: border-box;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+	input:focus, select:focus {
+  border-color: #005f99; 
+  outline: none;
+  background-color: #e6f2ff; 
+}
+    .input-container {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 1rem;
+}
+    input, button {
+      width: 100%;
+      padding: 1rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      box-sizing: border-box;
+}
+    input {
+      border: 1px solid #ccc;
+      background-color: #f9f9f9;
+      margin-bottom: 1.5rem;
+}
+    button {
+  transition: all 0.25s ease-in-out;
+}
+	button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+	.button-group button:nth-child(4) {
+  background-color: #6c757d;
+}
+	.button-group button:nth-child(4):hover {
+  background-color: #5a6268;
+}
+    #result {
+  font-family: 'Rubik', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #333;
+  animation: slideFade 0.6s ease-in-out;
+}
+	@keyframes slideFade {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+	}
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+    .info-icon {
+      color: #007bff;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-left: 8px;
+}
+	.info-wrapper .fa-cog {
+  transition: transform 0.3s ease;
+}
+	.info-wrapper .fa-cog:hover {
+  transform: rotate(30deg);
+}
+    .tooltip {
+      visibility: hidden;
+      background-color: #333;
+      color: #fff;
+      text-align: left;
+      border-radius: 6px;
+      padding: 8px;
+      position: absolute;
+      z-index: 1;
+      font-size: 0.85rem;
+      width: 220px;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      transition: opacity 0.3s;
+}
+    .info-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+    .info-wrapper:hover .tooltip {
+      visibility: visible;
+      opacity: 1;
+    }
+    .footer {
+      font-size: 0.8rem;
+      color: #888;
+      margin-top: 1.5rem;
+    }
+    .delete-btn {
+      background-color: #dc3545;
+      color: white;
+      padding: 6px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      border: none;
+      margin-top: 5px;
+    }
+    .delete-btn:hover {
+      background-color: #b02a37;
+    }
+    #history {
+      max-height: 300px;
+      overflow-y: auto;
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 1rem;
+      font-size: 0.75rem;
+      display: none;
+	  text-align: left;
+    }
+	.history-title {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+	#history h4 {
+  text-align: center;
+}
+    .button-group {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+    .button-group button {
+      flex: 1 1 45%;
+      max-width: 160px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+    .show-hide-btn {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      cursor: pointer;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: 0.3s;
+    }
+    .show-hide-btn:hover {
+      background-color: #218838;
+    }
+	.error-message {
+  color: #d9534f !important;
+  font-weight: bold;
+}
+    @media (max-width: 600px) {
+    }	
+	.modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+.modal-content {
+  width: 90%;
+  max-width: 340px; 
+  padding: 16px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  margin: 5% auto;
+  font-size: 0.9rem;
+  box-sizing: border-box;
+}
+.modal-content h3 {
+  text-align: center;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+.modal-content label {
+  display: block;
+  margin: 8px 0 4px;
+  font-weight: 600;
+}
+.modal-content input[type="number"] {
+  width: 100%;
+  padding: 8px 10px;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+.modal-content .small-btn {
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.modal-content .small-btn:hover {
+  background-color: #0056b3;
+}
+.modal-content .close {
+  font-size: 20px;
+  top: 8px;
+  right: 12px;
+}
+.close {
+  color: #aaa;
+  position: absolute;
+  top: 10px;
+  right: 16px;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.close:hover {
+  color: #000;
+}
+.small-btn {
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  transition: background-color 0.3s;
+}
+.small-btn:hover {
+  background-color: #0056b3;
+}
+.time-container {
+  display: flex;
+  justify-content: space-between; 
+  gap: 20px; 
+  margin-top: 10px; 
+}
+.time-box {
+  display: flex;
+  flex-direction: column; 
+  width: 48%; 
+}
+label {
+  font-size: 14px;
+  margin-bottom: 5px; 
+}
+input {
+  padding: 5px;
+  font-size: 14px;
+  width: 100%; 
+  box-sizing: border-box; 
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+select {
+  background-color: #e0f7fa;
+  color: #007bff;
+  font-weight: 600;
+  border: 2px solid #007bff;
+  border-radius: 8px;
+  padding: 10px;
+  margin-top: 10px;
+  transition: all 0.3s ease-in-out;
+}
+select:focus {
+  outline: none;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+}
+select.selected {
+  background-color: #d1ecf1;
+  border-color: #17a2b8;
+  color: #0c5460;
+}
+.container {
+    max-width: 320px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  #carImage {
+    width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+  #colorButtons {
+  margin-top: 12px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);         
+  background: rgba(255, 255, 255, 0.25); 
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); 
+  border: 1px solid rgba(255, 255, 255, 0.3); 
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+ .color-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.5), rgba(0,0,0,0.05));
+  box-shadow:
+    inset 0 1px 2px rgba(255,255,255,0.6),  
+    inset 0 -1px 2px rgba(0,0,0,0.2),       
+    0 2px 6px rgba(0,0,0,0.35);             
+  transition: all 0.3s ease;
+}
+.color-btn[data-color="Alpine-White"] { background-color: #F0F0F0; }
+.color-btn[data-color="Aurora-Silver"] { background-color: #C0C0C0; }
+.color-btn[data-color="Iceland-Grey"] { background-color: #8A8A8A; }
+.color-btn[data-color="Onyx-Black"] { background-color: #111111; }
+.color-btn[data-color="Sahara-Sand"] { background-color: #D6C2A3; }
+.color-btn[data-color="Volcano-Orange-With-White-Roof"] {background: linear-gradient(45deg, #ffffff 40%, #FF6F3C 40%);}
+.color-btn[data-color="Volcano-Orange"] { background-color: #FF5A1F; }
+.color-btn:hover {
+  transform: scale(1.1);
+  box-shadow:
+    inset 0 1px 2px rgba(255,255,255,0.8),
+    inset 0 -1px 3px rgba(0,0,0,0.3),
+    0 4px 8px rgba(0,0,0,0.5);
+}
+.color-btn.selected {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+input[type="number"],
+input[type="time"] {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 1rem;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  background: #f0f0f3;
+  box-shadow: 
+    6px 6px 12px #d1d9e6, 
+    -6px -6px 12px #ffffff; 
+  transition: 0.3s ease;
+}
+input[type="number"]:focus,
+input[type="time"]:focus {
+  box-shadow:
+    inset 4px 4px 8px #d1d9e6,
+    inset -4px -4px 8px #ffffff;
+}
+label[for="Remaining"],
+label[for="target"],
+label[for="startTime"],
+label[for="endTime"],
+label[for="settingPower"],
+label[for="settingLoss"],
+label[for="settingBuffer"],
+label[for="settingCost"] {
+  font-weight: 700;
+  color: #222;
+}
+.modal-content input[type="number"] {
+  text-align: center;
+}
+.small-button {
+  font-size: 0.8rem;      
+  padding: 4px 8px;      
+  margin: 2px;           
+  border-radius: 4px;    
+}
+#Remaining {
+  margin-top: 7px; 
+}
+#carImage, #saveColorBtn {
+  cursor: pointer;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+#startTime,#endTime {
+  color: #1088eb;
+  font-weight: 600;
+  font-family: 'Quicksand', sans-serif;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  letter-spacing: 0.5px;
+}
+.date-filter {
+  display: none;
+  background-color: #ffffff;
+  padding: 1rem 1.2rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  margin-top: 1.5rem;
+  font-family: 'Quicksand', sans-serif;
+  animation: fadeIn 0.3s ease;
+}
+.date-filter h4 {
+  text-align: center;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  color: #00796b;
+}
+.filter-group {
+  margin-bottom: 0.75rem;
+  display: flex;
+  flex-direction: column;
+}
+.filter-group label {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+}
+.filter-group input[type="date"] {
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f3f9f3;
+  font-size: 0.95rem;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+.filter-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 1rem;
+}
+.filter-actions button {
+  flex: 1;
+  padding: 0.6rem;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #fff;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+.filter-actions button:nth-child(1) {
+  background-color: #1088eb;
+}
+.filter-actions button:nth-child(2) {
+  background-color: #999;
+}
+.filter-actions button:nth-child(3) {
+  background-color: #28a745;
+}
+.filter-actions button:hover {
+  opacity: 0.9;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>EV Charging Time Calculator</h2>
+  <img id="carImage" src="https://img5.pic.in.th/file/secure-sv1/AionV-Aurora-Silver.png" alt="AionV" />
+  <div id="colorButtons" aria-label="Select Car Color">
+    <button class="color-btn" data-color="Alpine-White" title="Alpine White" style="background:#F0F0F0;"></button>
+    <button class="color-btn" data-color="Aurora-Silver" title="Aurora Silver" style="background:#C0C0C0;"></button>
+    <button class="color-btn" data-color="Iceland-Grey" title="Iceland Grey" style="background:#8A8A8A;"></button>
+    <button class="color-btn" data-color="Onyx-Black" title="Onyx Black" style="background:#111111;"></button>
+    <button class="color-btn" data-color="Sahara-Sand" title="Sahara Sand" style="background:#D6C2A3;"></button>
+    <button class="color-btn" data-color="Volcano-Orange-With-White-Roof" title="Volcano Orange W/ Roof" style="background: linear-gradient(200deg, #ffffff 30%, #FF6F3C 40%);"></button>
+    <button class="color-btn" data-color="Volcano-Orange" title="Volcano Orange" style="background:#FF5A1F;"></button>
+    <button id="saveColorBtn" class="small-btn" style="margin-top: 5px;">Save</button>
+  </div>
+<div id="summaryTotals" style="
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  font-size: 0.9rem; 
+  margin: 1rem 0;
+  padding: 0.8rem 1rem;
+  background: linear-gradient(135deg, #e0f7fa, #ffffff);
+  border-radius: 12px;
+  border: 1px solid #b2ebf2;
+  box-shadow: 0 4px 12px rgba(0, 150, 136, 0.2);
+  color: #004d40;
+  gap: 1rem;
+  text-align: center;
+  transition: all 0.3s ease;
+">
+  <div style="flex: 1;">
+    <div style="font-weight:bold;">🔥 Total Energy</div>
+    <div><span id="totalLoss" style="color:orangered; font-weight:bold;">0.00</span> kWh</div>
+  </div>
+  <div style="flex: 1;">
+    <div style="font-weight:bold;">💰 Total Cost</div>
+    <div><span id="totalCost" style="color:green; font-weight:bold;">0.00</span> ฿</div>
+  </div>
+</div>
+<div id="dateFilter" class="date-filter">
+  <h4>📅 Filter by Date</h4>
+  <div class="filter-group">
+    <label for="fromDate">From Date:</label>
+    <input type="date" id="fromDate">
+  </div>
+  <div class="filter-group">
+    <label for="toDate">To Date:</label>
+    <input type="date" id="toDate">
+  </div>
+  <div class="filter-actions">
+    <button onclick="applyDateFilter()">✅ Apply</button>
+    <button onclick="resetDateFilter()">♻️ Reset</button>
+    <button onclick="downloadFilteredData()">Download</button>
+  </div>
+</div>
+
+  <div class="input-container">
+    <div style="flex: 1;">
+      <label for="Remaining">RemainingDistance(km)</label>
+      <input type="number" class="neumorphic" id="Remaining" min="0" max="602" placeholder="0 - 602 km"style="margin-top: 6px;">
+      <div id="remainingPercentDisplay" style="margin-top:-1rem; color:#f5240c; font-size:0.9rem; text-align:left;"></div>
+    </div>
+<div style="flex: 1;">
+  <label for="target">Charging Target(%)</label>
+  <input type="number"class="neumorphic"  id="target" min="0" max="100" placeholder="0-100%"style="margin-top: 6px;">
+  <div id="targetDistanceIncreaseDisplay" style="margin-top:-1rem; color:#f5240c; font-size:0.9rem; text-align:left;"></div>
+</div>
+  </div>
+  <div class="time-container">
+  <div class="time-box">
+    <label for="startTime">Start Time Charging</label>
+    <input type="time" class="neumorphic" id="startTime">
+  </div>
+  <div class="time-box">
+    <label for="endTime">Finish Time Charging</label> 
+    <input type="time" class="neumorphic" id="endTime" disabled>
+  </div>
+</div>
+  <div class="info-wrapper">
+  <i class="fas fa-info-circle info-icon"></i>
+  <i class="fas fa-cog info-icon" onclick="toggleSettings()" title="Advanced Settings"></i>
+  <div class="tooltip">
+    <strong>Note: Set values in calculation.</strong><br> 
+    🔋 Battery Capacity: 75.259 kWh<br>
+    🔌 Charger Power: 7 kW<br>
+    🔥 Charging Loss: 10%<br>
+    🛣️ Max Distance (100%): 602 km<br>
+    ⏰ Difference in charging time ± 8 minutes<br>	
+  </div>
+</div>
+  <button onclick="calculateChargingTime(event)"style="background-color:#c3d9c4;class="small-button">⏰Calculate Time Charging⏰</button>
+  <div id="loading" style="color:#007bff; display:none;">...Completed...</div>
+  <div id="result"></div>
+<div id="settingsModal" class="modal">
+  <div class="modal-content">
+  <span class="close" onclick="toggleSettings()">&times;</span>
+  <h3>⚙️ Advanced Settings</h3>
+  <label for="settingPower">🔌 Charger Power (kW):</label>
+  <input type="number" id="settingPower" step="0.1">
+  <label for="settingLoss">🔥 Charging Loss (%):</label>
+  <input type="number" id="settingLoss" step="0.1">
+  <label for="settingBuffer">⏱️ Buffer Time (minutes):</label>
+  <input type="number" id="settingBuffer" step="1">
+  <label for="settingCost">💰 Cost per kWh (฿):</label>
+  <input type="number" id="settingCost" step="0.01">
+  <div style="display:flex; gap:8px; justify-content:center; margin-top:12px;">
+    <button class="small-btn" onclick="saveSettings()">💾 Save</button>
+    <button class="small-btn" onclick="resetSettings()">🔄 Default</button>
+    <button class="small-btn" onclick="toggleSettings()">❌ Close</button>
+  </div>
+</div>
+</div>
+  <div class="button-group">
+  <button onclick="downloadCSV()"style="background-color:#cef5d0;"class="small-button">Download History</button> 
+  <button onclick="clearHistory()"style="background-color:#f5d9d3;"class="small-button">Delete All History</button> 
+  <button class="show-hide-btn" id="showHideBtn" onclick="toggleHistory()">
+    <span id="historyText"class="small-button">Show History</span>
+  </button>
+  <button onclick="resetForm()" style="background-color:#b9bfb8;"class="small-button">Clear Input value</button>
+</div>
+  <div id="history">
+  <h2 class="history-title">Charging History:</h2>
+  <ul id="historyList"></ul>
+</div>
+  <div class="footer">Let You Enjoy Using Your Car. Version.2.5</div>
+</div>
+
+<script>
+  const carImage = document.getElementById("carImage");
+  const colorButtons = document.querySelectorAll('.color-btn');
+  const saveColorBtn = document.getElementById("saveColorBtn");
+  const colorPanel = document.getElementById("colorButtons");
+  const imageMap = {
+    "Alpine-White": "AionV-Alpine-White.png",
+    "Aurora-Silver": "AionV-Aurora-Silver.png",
+    "Iceland-Grey": "AionV-Iceland-Grey.png",
+    "Onyx-Black": "AionV-Onyx-Black.png",
+    "Sahara-Sand": "AionV-Sahara-Sand.png",
+    "Volcano-Orange-With-White-Roof": "AionV-Volcano-Orange-With-White-Roof.png",
+    "Volcano-Orange": "AionV-Volcano-Orange.png"
+  };
+  function setCarImage(filename) {
+    carImage.src = `https://img5.pic.in.th/file/secure-sv1/${filename}`;
+    carImage.onerror = function () {
+      carImage.onerror = null;
+      carImage.src = `https://img2.pic.in.th/pic/${filename}`;
+    };
+  }
+  function selectColor(btn) {
+  colorButtons.forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+colorButtons.forEach(btn => {
+  btn.addEventListener('click', () => selectColor(btn));
+  btn.addEventListener('touchstart', () => selectColor(btn)); 
+});
+  saveColorBtn.addEventListener("click", () => {
+    const selectedBtn = document.querySelector(".color-btn.selected");
+    if (selectedBtn) {
+      const color = selectedBtn.getAttribute("data-color");
+      const filename = imageMap[color];
+      if (filename) {
+        localStorage.setItem("selectedColor", color);
+        setCarImage(filename);
+        colorPanel.style.display = "none"; 
+      }
+    }
+  });
+  function toggleColorPanel() {
+  colorPanel.style.display = (colorPanel.style.display === "none") ? "flex" : "none";
+}
+carImage.addEventListener("click", toggleColorPanel);
+carImage.addEventListener("touchstart", toggleColorPanel); 
+  window.addEventListener("DOMContentLoaded", () => {
+    const savedColor = localStorage.getItem("selectedColor");
+    if (savedColor && imageMap[savedColor]) {
+      setCarImage(imageMap[savedColor]);
+      colorButtons.forEach(b => {
+        b.classList.toggle('selected', b.getAttribute('data-color') === savedColor);
+      });
+    }
+    colorPanel.style.display = "none"; 
+  });
+	const  batteryCapacity = 75.259;
+	const  maxDistanceKm = 602;
+	let chargerPower = 7;
+	let chargingLoss = 11;
+	let bufferMinutes = 0; 
+	let costPerKWh = 4;
+ function calculateChargingTime(event) {
+  const button = event?.target || document.querySelector("button[onclick='calculateChargingTime()']");
+  button.disabled = true;
+  const distanceInput = parseFloat(document.getElementById('Remaining').value);
+  const Remaining = (distanceInput * 100) / maxDistanceKm;
+  const target = parseFloat(document.getElementById('target').value);
+  const startTime = document.getElementById('startTime').value;
+  const resultDiv = document.getElementById('result');
+  const loadingDiv = document.getElementById('loading');
+  const distanceoutput = (target * maxDistanceKm) / 100;
+  const expectedDistance = distanceoutput - distanceInput;
+  const Battery = target - Remaining;
+  loadingDiv.style.display = 'block';
+  loadingDiv.textContent = '...❗Check input value❗...';
+  loadingDiv.style.color = '#ff0000';
+  if (isNaN(distanceInput) || distanceInput < 0 || distanceInput > 602) {
+    resultDiv.className = "error-message";
+    resultDiv.innerText = ".Please enter a valid remaining distance  (0 to 602 km).";
+    button.disabled = false;
+    return;
+  }
+  if (isNaN(target) || target < 0 || target > 100) {
+    resultDiv.className = "error-message";
+    resultDiv.innerText = ".Please enter a valid Charging Target % (0 to 100%).";
+    button.disabled = false;
+    return;
+  }
+  if (isNaN(Remaining) || Remaining < 0 || Remaining > 100) {
+    resultDiv.className = "error-message";
+    resultDiv.innerText = ".Please enter a valid Remaining battery % (0 to 100%).";
+    button.disabled = false;
+    return;
+  }
+  if (Remaining >= 100) {
+    resultDiv.className = "error-message";
+    resultDiv.innerText = "Battery is already full (100%). No charging needed.";
+    button.disabled = false;
+    return;
+  }
+  if (isNaN(target) || target < 0 || target > 100 || target <= Remaining) {
+    resultDiv.className = "error-message";
+    resultDiv.innerText = `Charging target (${target}%) must be greater than Remaining battery (${Remaining.toFixed(1)}%) and ≤ 100%.`;
+    button.disabled = false;
+    return;
+  }
+  if (!startTime) {
+    resultDiv.className = "error-message";
+    resultDiv.innerText = "Please select a valid start time (HH:mm format).";
+    button.disabled = false;
+    return;
+  }
+  const effectivePower = chargerPower * (1 - chargingLoss / 100);
+  const energyNeeded = (target - Remaining) / 100 * batteryCapacity;
+  const timeInHours = (energyNeeded / effectivePower);
+  let totalMinutes = Math.round(timeInHours * 60) + bufferMinutes;
+  const chargeDelta = target - Remaining;
+if (Remaining <= 20) {
+  if (chargeDelta <= 10) {
+    totalMinutes -= 10;
+  } else if (chargeDelta <= 20) {
+    totalMinutes -= 24;
+  } else if (chargeDelta <= 30) {
+    totalMinutes -= 19;
+  } else if (chargeDelta <= 40) {
+    totalMinutes -= 22;
+  } else if (chargeDelta <= 50) {
+    totalMinutes -= 21;
+  } else if (chargeDelta <= 60) {
+    totalMinutes -= 21;
+  } else if (chargeDelta <= 70) {
+    totalMinutes -= 17;
+  } else if (chargeDelta <= 80) {
+    totalMinutes -= 16;	
+  } else if (chargeDelta <= 90) {
+    totalMinutes -= 24;
+  } else if (chargeDelta <= 100) {
+    totalMinutes -= 13;
+  }
+} else {
+  if (chargeDelta <= 10) {
+    totalMinutes += 1;
+  } else if (chargeDelta <= 20) {
+    totalMinutes -= 1;
+  } else if (chargeDelta <= 30) {
+    totalMinutes += 2;
+  } else if (chargeDelta <= 40) {
+    totalMinutes += 3;
+  } else if (chargeDelta <= 50) {
+    totalMinutes += 4;
+  } else if (chargeDelta <= 60) {
+    totalMinutes += 5;
+  } else if (chargeDelta <= 70) {
+    totalMinutes += 6;
+  } else if (chargeDelta <= 80) {
+    totalMinutes -= 4;
+  } else if (chargeDelta <= 90) {
+    totalMinutes -= 4;
+  } else if (chargeDelta <= 100) {
+    totalMinutes -= 2;
+  } else {
+    console.warn("Charge delta exceeding 100% may be due to error value.");
+  }
+}
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  const [startHour, startMinute] = startTime.split(":").map(Number);
+  const startDate = new Date();
+  startDate.setHours(startHour, startMinute);
+  const endDate = new Date(startDate.getTime() + totalMinutes * 60 * 1000);
+  const endHour = String(endDate.getHours()).padStart(2, '0');
+  const endMinute = String(endDate.getMinutes()).padStart(2, '0');
+  const isNextDay = endDate.getDate() !== startDate.getDate();
+  const endTimeDisplay = isNextDay ? `${endHour}:${endMinute} (Next Day)` : `${endHour}:${endMinute}`;
+  const energyUsed = ((target - Remaining) / 100) * batteryCapacity;
+  const totalEnergyWithLoss = energyUsed * (1 + (chargingLoss / 100));
+  const estimatedCost = totalEnergyWithLoss * costPerKWh;
+  resultDiv.className = "";
+  resultDiv.innerHTML = `
+    <div style="
+    border: 2px solid #007bff;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-top: 1rem;
+    background-color: #f0f8ff;
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.15);
+	font-size: 0.9rem;
+    text-align: left;
+  ">
+    <div>🛣️ Distance : ${distanceInput} km → ${distanceoutput.toFixed(0)} km (+${expectedDistance.toFixed(0)} km)</div>
+    <div>🔋 Battery : ${Remaining.toFixed(1)} % → ${target.toFixed(1)} % (+ ${Battery.toFixed(1)} %)</div>
+	<div>⚡ Energy Required: ${energyUsed.toFixed(2)} kWh</div>
+    <div>🔥 Energy Including Loss:<strong style="color:#f70c34;"> ${totalEnergyWithLoss.toFixed(2)} kWh</strong></div>
+	<div>💰 Estimated Cost: <strong style="color:green;">${estimatedCost.toFixed(2)} ฿</strong></div>
+    <div>🔌 Charging Time: ${hours} h : ${minutes} m</div>
+    <div>⏰ Start Time: <strong style="color:#1088eb;">${startTime}</strong> → Finish: <strong style="color:#1088eb;">${endTimeDisplay}</strong></div>
+    </div>
+  `;
+  loadingDiv.textContent = '<<< ✅ Completed ✅ >>>  ';
+  loadingDiv.style.color = 'green';
+  document.getElementById('endTime').value = `${endHour}:${endMinute}`;
+  setTimeout(() => {
+    loadingDiv.style.display = 'none';
+  }, 3000);
+  button.disabled = false;
+  const historyItem = {
+  id: Date.now(),
+  date: new Date().toLocaleString(),
+  distanceInput,
+  Remaining,
+  target,
+  startTime,
+  duration: `${hours}h ${minutes}m`,
+  endTime: `${endHour}:${endMinute}`,
+  chargerPower,    
+  chargingLoss,     
+  costPerKWh        
+};
+  const history = JSON.parse(localStorage.getItem('chargingHistory') || '[]');
+  history.unshift(historyItem);
+  localStorage.setItem('chargingHistory', JSON.stringify(history));
+  updateTotalSummary();
+}
+  function showHistory() {
+  const historyContainer = document.getElementById('history');
+  const history = JSON.parse(localStorage.getItem('chargingHistory') || '[]');
+  const filterRaw = localStorage.getItem('dateFilter');
+  const filter = filterRaw ? JSON.parse(filterRaw) : {};
+
+  console.log("History data:", history); 
+  console.log("Date filter:", filter); 
+
+  if (history.length === 0) {
+    historyContainer.innerHTML = "<p>No history yet.</p>";
+    return;
+  }
+  historyContainer.innerHTML = "<h4>Charging History:</h4><ul style='padding-left:1rem;'>";
+  const from = filter.fromDate ? parseDateString(filter.fromDate) : null;
+  const to = filter.toDate ? parseDateString(filter.toDate) : null;
+  history.forEach(item => {
+    const itemDate = parseDateString(item.date);  
+    if (to) to.setHours(23, 59, 59, 999); 
+    if (!isDateInRange(itemDate, from, to)) return;  
+    const charged = (item.target - item.Remaining).toFixed(1);
+    const kWhUsed = ((item.target - item.Remaining) / 100 * batteryCapacity);
+    const totalUsed = ((kWhUsed * (item.chargingLoss / 100)) + kWhUsed);
+    const estimatedCost = totalUsed * item.costPerKWh;
+    const distanceOutput = (item.target / 100) * maxDistanceKm;
+    const expectedDistance = distanceOutput - item.distanceInput;
+    historyContainer.innerHTML += `
+      <li style="margin-bottom:1rem; border-bottom:1px solid #ccc; padding-bottom:0.5rem;">
+        <strong>${item.date}</strong><br>
+        🛣️ Distance: ${item.distanceInput} km → ${distanceOutput.toFixed(0)} km (+${expectedDistance.toFixed(0)} km)<br>
+        🔋 Battery : ${item.Remaining.toFixed(1)}% → ${item.target}% (+${charged}%)<br>
+        ⚡ Energy Required: ${kWhUsed.toFixed(2)} kWh<br>
+        🔥 Energy Including Loss:<strong style="color:#f70c34;"> ${totalUsed.toFixed(2)} kWh</strong><br>
+        💰 Estimated Cost: <strong style="color:green;">${estimatedCost.toFixed(2)} ฿</strong><br>
+        ⏰ Start: <strong style="color:#1088eb;">${item.startTime} </strong>| Duration: ${item.duration} | Finish:<strong style="color:#1088eb;"> ${item.endTime}</strong><br>
+        <button class="delete-btn" onclick="deleteHistory(${item.id})">Delete</button>
+      </li>`;
+  });
+  historyContainer.innerHTML += "</ul>";
+  historyContainer.style.display = 'block';
+}
+  function deleteHistory(id) {
+    let history = JSON.parse(localStorage.getItem('chargingHistory') || '[]');
+    history = history.filter(item => item.id !== id);
+    localStorage.setItem('chargingHistory', JSON.stringify(history));
+    showHistory();
+	updateTotalSummary()
+  }
+  function toggleHistory() {
+  const historyContainer = document.getElementById('history');
+  const historyText = document.getElementById('historyText');
+  const currentDisplay = getComputedStyle(historyContainer).display;
+  if (currentDisplay !== 'none') {
+    historyContainer.style.display = 'none';
+    historyText.innerText = 'Show History';
+  } else {
+    showHistory(); 
+    historyContainer.style.display = 'block';
+    historyText.innerText = 'Hide History';
+  }
+}
+  function downloadCSV() {
+    const history = JSON.parse(localStorage.getItem('chargingHistory') || '[]');
+    if (history.length === 0) {
+      alert("No history to download.");
+      return;
+    }
+    let csv = "Date,Distance(km),Remaining (%),Target (%),Start Time,Duration,Finish,Energy Used (kWh),Total Energy with Loss (kWh),Estimated Cost (฿)\n";
+    history.forEach(item => {
+      const kWhUsed = ((item.target - item.Remaining) / 100 * batteryCapacity);
+      const totalUsed = ((kWhUsed*(item.chargingLoss/100))+kWhUsed);
+	  const estimatedCost = totalUsed * item.costPerKWh; 
+      csv += `${item.date},${item.distanceInput},${item.Remaining.toFixed(1)},${item.target},${item.startTime},${item.duration},${item.endTime},${kWhUsed.toFixed(2)},${totalUsed.toFixed(2)},${estimatedCost.toFixed(2)}\n`;
+    });
+    const hiddenElement = document.createElement('a');
+    hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+    hiddenElement.target = '_blank';
+    hiddenElement.download = 'charging_history.csv';
+    hiddenElement.click();
+  }
+  function clearHistory() {
+  if (confirm("Are you sure you want to clear all history?")) {
+    localStorage.removeItem('chargingHistory');
+    localStorage.removeItem('dateFilter'); 
+    showHistory();
+    updateTotalSummary();
+    document.getElementById('fromDate').value = '';
+    document.getElementById('toDate').value = '';
+  }
+}
+function resetForm() {
+  document.getElementById('Remaining').value = '';  
+  document.getElementById('target').value = '';  
+  document.getElementById('startTime').value = ''; 
+  document.getElementById('endTime').value = '';
+  document.getElementById('result').innerHTML = ''; 
+  document.getElementById('remainingPercentDisplay').innerText = '';  
+  document.getElementById('targetDistanceIncreaseDisplay').innerText = '';  
+  document.getElementById('loading').style.display = 'none';  
+}
+  document.getElementById('Remaining').addEventListener('input', function () {
+  const distance = parseFloat(this.value);
+  const displayDiv = document.getElementById('remainingPercentDisplay');
+  if (!isNaN(distance) && distance >= 0 && distance <= maxDistanceKm) {
+    const remainingPercent = (distance / maxDistanceKm) * 100;
+    displayDiv.textContent = `Remaining Battery: ${remainingPercent.toFixed(1)}% `;
+  } else {
+    displayDiv.textContent = '';
+  }
+});
+document.getElementById('target').addEventListener('input', function () {
+  const targetPercent = parseFloat(this.value);
+  const displayDiv = document.getElementById('targetDistanceIncreaseDisplay');
+  if (!isNaN(targetPercent) && targetPercent >= 0 && targetPercent <= 100) {
+    const distanceOutput = (targetPercent / 100) * maxDistanceKm;
+    displayDiv.textContent = `Expected Distance: ${distanceOutput.toFixed(0)} km`;
+  } else {
+    displayDiv.textContent = '';
+  }
+});
+function toggleSettings() {
+  const modal = document.getElementById('settingsModal');
+  if (modal.style.display === "block") {
+    modal.style.display = "none";
+  } else {
+    loadSettingsToForm();
+    modal.style.display = "block";
+  }
+}
+function saveSettings() {
+  chargerPower = parseFloat(document.getElementById('settingPower').value) || chargerPower;
+  chargingLoss = parseFloat(document.getElementById('settingLoss').value) || chargingLoss;
+  bufferMinutes = parseInt(document.getElementById('settingBuffer').value) || bufferMinutes;
+  costPerKWh = parseFloat(document.getElementById('settingCost').value) || costPerKWh;
+  localStorage.setItem('chargingSettings', JSON.stringify({
+    chargerPower,
+    chargingLoss,
+    bufferMinutes,
+    costPerKWh
+  }));
+  updateTooltip();
+  alert('Settings saved!');
+  toggleSettings();
+}
+function loadSettingsToForm() {
+  const settings = JSON.parse(localStorage.getItem('chargingSettings')) || {};
+  document.getElementById('settingPower').value = settings.chargerPower ?? chargerPower;
+  document.getElementById('settingLoss').value = settings.chargingLoss ?? chargingLoss;
+  document.getElementById('settingBuffer').value = settings.bufferMinutes ?? bufferMinutes;
+  document.getElementById('settingCost').value = settings.costPerKWh ?? costPerKWh;
+}
+function resetSettings() {
+  chargerPower = 7;
+  chargingLoss = 11;
+  bufferMinutes = 0;
+  costPerKWh = 4;
+  localStorage.removeItem('chargingSettings');
+  loadSettingsToForm();
+  updateTooltip();
+  alert("🔄 Reset to default.");
+}
+function loadSettingsFromStorage() {
+  const saved = JSON.parse(localStorage.getItem('chargingSettings'));
+  if (saved) {
+  chargerPower = saved.chargerPower;
+  chargingLoss = saved.chargingLoss;
+  bufferMinutes = saved.bufferMinutes;
+  costPerKWh = saved.costPerKWh;
+}
+  updateTooltip();
+}
+function updateTooltip() {
+    const settings = JSON.parse(localStorage.getItem('chargingSettings')) || {};
+    const tooltip = document.querySelector('.tooltip');  
+    if (settings.chargerPower && settings.chargingLoss && settings.bufferMinutes !== undefined) {
+        tooltip.innerHTML = `
+            <strong>Note: Set values in calculation.</strong><br>
+            🔋 Battery Capacity: 75.259 kWh<br>
+            🔌 Charger Power: ${settings.chargerPower} kW<br>
+            🔥 Charging Loss: ${settings.chargingLoss}%<br>
+            🛣️ Max Distance (100%): 602 km<br>
+			💸 Cost per kWh: ฿${settings.costPerKWh || 0}<br>
+            ⏰ Buffer Time: ${settings.bufferMinutes} minutes<br>
+            ⏰ Difference in charging time ± 8 minutes<br>
+			
+        `;
+    }
+}
+
+function updateTotalSummary() {
+  const history = JSON.parse(localStorage.getItem('chargingHistory') || '[]');
+  const filter = JSON.parse(localStorage.getItem('dateFilter') || '{}');
+  let totalEnergy = 0;
+  let totalCost = 0;
+  history.forEach(item => {
+    const itemDate = parseDateString(item.date);
+    itemDate.setHours(0, 0, 0, 0); 
+    const from = filter.fromDate ? parseDateString(filter.fromDate) : null;
+    const to = filter.toDate ? parseDateString(filter.toDate) : null;
+    if (from) from.setHours(0, 0, 0, 0);
+    if (to) to.setHours(23, 59, 59, 999);
+    const inRange = (!from && !to) ||
+                    (from && !to && itemDate >= from) ||
+                    (!from && to && itemDate <= to) ||
+                    (from && to && itemDate >= from && itemDate <= to);
+    if (inRange) {
+      const used = ((item.target - item.Remaining) / 100 * batteryCapacity);
+      const loss = parseFloat(item.chargingLoss || 11);
+      const costPerKWh = parseFloat(item.costPerKWh || 4);
+      const totalUsed = used * (1 + loss / 100);
+      const cost = totalUsed * costPerKWh;
+      totalEnergy += totalUsed;
+      totalCost += cost;
+    }
+  });
+  document.getElementById("totalLoss").innerHTML = `<b style="color:orangered;">${totalEnergy.toFixed(2)}</b>`;
+  document.getElementById("totalCost").innerHTML = `<b style="color:green;">${totalCost.toFixed(2)}</b>`;
+}
+function applyDateFilter() {
+  const fromDate = document.getElementById('fromDate').value;
+  const toDate = document.getElementById('toDate').value;
+  if (!fromDate || !toDate) {
+    alert("Please select the From and To dates completely.");
+    return;
+  }
+  if (new Date(fromDate) > new Date(toDate)) {
+    alert("The From date must not be less than the To date."); 
+  return;
+}
+  const filter = { fromDate, toDate };
+  localStorage.setItem('dateFilter', JSON.stringify(filter));
+  updateTotalSummary();
+  showHistory()
+}
+function convertThaiYearToAD(dateStr) {
+  const parts = dateStr.split("/");
+  if (parts.length !== 3) return new Date(dateStr);
+  let day = parseInt(parts[0], 10);
+  let month = parseInt(parts[1], 10) - 1; // 0-based month
+  let year = parseInt(parts[2], 10);
+  if (year > 2500) {  
+    year -= 543;
+  }
+  return new Date(year, month, day);
+}
+function parseDateString(dateStr) {
+  if (!dateStr) return null;
+  if (dateStr.includes('-')) {
+    return new Date(dateStr);
+  }
+  const [day, month, year] = dateStr.split('/');
+  let yearNum = parseInt(year, 10);
+  if (yearNum > 2500) yearNum -= 543; 
+  return new Date(`${yearNum}-${month}-${day}`);
+}
+function isDateInRange(itemDate, from, to) {
+  if (!itemDate) return false;
+  const item = new Date(itemDate);
+  item.setHours(0, 0, 0, 0); 
+  const fromTime = from ? new Date(from.setHours(0, 0, 0, 0)).getTime() : null;
+  const toTime = to ? new Date(to.setHours(23, 59, 59, 999)).getTime() : null;
+  const itemTime = item.getTime();
+  if (!from && !to) return true;
+  if (from && !to) return itemTime >= fromTime;
+  if (!from && to) return itemTime <= toTime;
+  return itemTime >= fromTime && itemTime <= toTime;
+}
+function resetDateFilter() {
+  document.getElementById('fromDate').value = '';
+  document.getElementById('toDate').value = '';
+  localStorage.removeItem('dateFilter');
+  updateTotalSummary();
+  showHistory();
+}
+function downloadFilteredData() {
+  const batteryCapacity = 75.259; 
+  const history = JSON.parse(localStorage.getItem('chargingHistory') || '[]');
+  const filter = JSON.parse(localStorage.getItem('dateFilter') || '{}');
+  const filtered = history.filter(item => {
+    const itemDate = parseDateString(item.date);
+    const from = filter.fromDate ? parseDateString(filter.fromDate) : null;
+    const to = filter.toDate ? parseDateString(filter.toDate) : null;
+    if (from) from.setHours(0, 0, 0, 0);
+    if (to) to.setHours(23, 59, 59, 999);
+    return (!from || !to) || (from <= itemDate && itemDate <= to);
+  });
+
+  if (filtered.length === 0) {
+    alert("No data for the selected time period.");
+    return;
+  }
+  const csv = [
+    ["Date", "Remaining (%)", "Target (%)", "Duration", "Total Energy with Loss (kWh)", "Estimated Cost (฿)"],
+    ...filtered.map(item => {
+      const used = ((item.target - item.Remaining) / 100) * batteryCapacity;
+      const loss = parseFloat(item.chargingLoss || 11);
+      const costPerKWh = parseFloat(item.costPerKWh || 4);
+      const totalUsed = used * (1 + loss / 100);
+      const estimatedCost = totalUsed * costPerKWh;
+      return [
+        item.date,
+        item.Remaining.toFixed(1),
+        item.target,        
+        item.duration,        
+        totalUsed.toFixed(2),
+        estimatedCost.toFixed(2)
+      ];
+    })
+  ].map(row => row.join(",")).join("\n");
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `Filtered_Charging_History.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+	document.getElementById("summaryTotals").addEventListener("click", () => {
+  const filter = document.getElementById("dateFilter");
+  filter.style.display = (filter.style.display === "none") ? "block" : "none";
+});
+window.addEventListener('DOMContentLoaded', () => {
+  updateTotalSummary();
+});
+window.onload = loadSettingsFromStorage;
+window.onclick = function(event) {
+  const modal = document.getElementById('settingsModal');
+  if (event.target === modal) {
+    modal.style.display = "none";
+  }
+};
+window.addEventListener("DOMContentLoaded", () => {
+  localStorage.removeItem('dateFilter');
+  document.getElementById('fromDate').value = '';
+  document.getElementById('toDate').value = '';
+  updateTotalSummary(); 
+});
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('service-worker.js')
+      .then(registration => {
+        console.log('[PWA] Service Worker registered with scope:', registration.scope);
+      })
+      .catch(error => {
+        console.error('[PWA] Service Worker registration failed:', error);
+      });
+    });
+  }
+</script>
+</body>
+</html>

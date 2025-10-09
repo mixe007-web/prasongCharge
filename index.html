@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AC-EV-Charging-Time</title>
+
+  <!-- ✅ PWA Manifest -->
+  <link rel="manifest" href="./manifest.json" />
+
+  <!-- ✅ Icons -->
+  <link rel="icon" href="./icon-192.png" type="image/png" />
+  <link rel="apple-touch-icon" href="./icon-512.png" />
+
+  <!-- ✅ Meta -->
+  <meta name="theme-color" content="#0d6efd" />
+  <meta name="description" content="AC-EV-Charging-Time Progressive Web App" />
+</head>
+
+<body>
+  <noscript>ต้องเปิดใช้งาน JavaScript เพื่อให้เว็บทำงานได้</noscript>
+
+  <!-- Loader -->
+  <div id="loading" style="text-align:center; margin-top:40vh;">
+    <h3>🚗 กำลังโหลด AC-EV-Charging-Time..</h3>
+  </div>
+
+  <script>
+    // ✅ โหลด Service Worker ก่อนเข้าแอป
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker
+        .register('./service-worker.js')
+        .then(() => {
+          console.log('[SW] Registered');
+          // รอให้ service worker ทำงานก่อน redirect
+          setTimeout(() => {
+            window.location.href = './AC-EV-Charging-Time.html';
+          }, 600);
+        })
+        .catch(err => {
+          console.warn('[SW] Failed:', err);
+          window.location.href = './AC-EV-Charging-Time.html';
+        });
+    } else {
+      window.location.href = './AC-EV-Charging-Time.html';
+    }
+  </script>
+</body>
+</html>
