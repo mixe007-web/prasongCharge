@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -19,13 +19,14 @@
       padding: 1rem;
     }
     h1 {
-      font-size: 3rem;
-      color: #28a745;
+      font-size: 2.5rem;
+      color: #007bff;
       margin-bottom: 0.5rem;
     }
     p {
-      font-size: 1.25rem;
+      font-size: 1.2rem;
       margin-bottom: 2rem;
+      color: #555;
     }
     i {
       font-size: 5rem;
@@ -33,27 +34,27 @@
       margin-bottom: 1rem;
     }
     button {
-      background-color: #28a745;
+      background-color: #007bff;
       color: white;
       border: none;
       padding: 0.75rem 1.5rem;
-      border-radius: 5px;
+      border-radius: 6px;
       font-size: 1rem;
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
     button:hover {
-      background-color: #218838;
+      background-color: #0056b3;
     }
   </style>
 </head>
 <body>
   <i class="fas fa-wifi-slash"></i>
-  <h1>You are offline</h1>
-  <p>Sorry, the page is not available while you are offline.</p>
-  <button onclick="location.reload()">Try Again</button>
+  <h1>คุณออฟไลน์อยู่</h1>
+  <p>ไม่สามารถโหลดข้อมูลได้ในขณะนี้ กรุณาเชื่อมต่ออินเทอร์เน็ตใหม่อีกครั้ง</p>
+  <button onclick="location.reload()">🔄 โหลดหน้าใหม่</button>
 
-  <!-- FontAwesome CDN for the wifi-slash icon -->
+  <!-- FontAwesome icon CDN -->
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </body>
 </html>
