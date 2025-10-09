@@ -1,8 +1,8 @@
 // ===============================
-// ⚡ AC-EV-Charging-Time Service Worker (Fixed v2)
+// ⚡ AC-EV-Charging-Time Service Worker (Auto-Update v4)
 // ===============================
 
-const CACHE_NAME = 'ev-time-calculator-v1';
+const CACHE_NAME = 'ev-time-calculator-v4'; // ← เปลี่ยน version ทุกครั้งที่อัปโหลด
 const urlsToCache = [
   './index.html',
   './AC-EV-Charging-Time.html',
@@ -11,7 +11,9 @@ const urlsToCache = [
   './icon-512.png'
 ];
 
-// ติดตั้งและ cache ไฟล์
+// -------------------------------
+// 📦 INSTALL
+// -------------------------------
 self.addEventListener('install', event => {
   console.log('[SW] Installing and caching files...');
   event.waitUntil(
@@ -28,31 +30,58 @@ self.addEventListener('install', event => {
       );
     })
   );
+
+  // ⚡ สำคัญ: บังคับให้ SW ตัวใหม่ activate ทันที
   self.skipWaiting();
 });
 
-// ดัก fetch
+// -------------------------------
+// ♻️ ACTIVATE (อัปเดตอัตโนมัติ)
+// -------------------------------
+self.addEventListener('activate', event => {
+  console.log('[SW] Activated — clearing old cache...');
+  event.waitUntil(
+    caches.keys().then(cacheNames =>
+      Promise.all(
+        cacheNames.map(name => {
+          if (name !== CACHE_NAME) {
+            console.log('[SW] 🗑️ Removing old cache:', name);
+            return caches.delete(name);
+          }
+        })
+      )
+    ).then(() => {
+      // ✅ อัปเดตทุกแท็บให้ใช้ SW ใหม่ทันที
+      return self.clients.claim().then(() => {
+        return self.clients.matchAll({ type: 'window' }).then(clients => {
+          for (const client of clients) {
+            client.navigate(client.url); // รีเฟรชแท็บทั้งหมด
+          }
+        });
+      });
+    })
+  );
+});
+
+// -------------------------------
+// 🌐 FETCH
+// -------------------------------
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
 
   try {
     const reqURL = new URL(event.request.url);
     if (reqURL.protocol.startsWith('chrome-extension')) return;
-  } catch (err) {
+  } catch {
     return;
   }
 
   event.respondWith(
     caches.match(event.request).then(cachedResponse => {
-      if (cachedResponse) {
-        console.log('[SW] Serve from cache:', event.request.url);
-        return cachedResponse;
-      }
+      if (cachedResponse) return cachedResponse;
 
       return fetch(event.request).catch(() => {
-        // ถ้าโหลดไม่ได้ และเป็น HTML (document) → แสดง offline.html
         if (event.request.destination === 'document') {
-          console.warn('[SW] Offline fallback triggered');
           return caches.match('./offline.html');
         }
       });
@@ -60,21 +89,4 @@ self.addEventListener('fetch', event => {
   );
 });
 
-// ล้าง cache เก่า
-self.addEventListener('activate', event => {
-  console.log('[SW] Activated');
-  event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(name => {
-          if (name !== CACHE_NAME) {
-            console.log('[SW] Removing old cache:', name);
-            return caches.delete(name);
-          }
-        })
-      );
-    }).then(() => self.clients.claim())
-  );
-});
-
-console.log('[SW] ⚡ AC-EV-Charging-Time Service Worker v2 ready.');
+console.log('[SW] ⚡ AC-EV-Charging-Time Service Worker v4 ready.');

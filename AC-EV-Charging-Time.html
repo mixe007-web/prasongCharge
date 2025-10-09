@@ -656,7 +656,70 @@ label[for="settingCost"] {
 </div>
   <div class="footer">Let You Enjoy Using Your Car. Version.2.5</div>
 </div>
+<script>
+// ===============================
+// 🔁 Force Update Service Worker + Popup Notice
+// ===============================
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', async () => {
+    try {
+      const reg = await navigator.serviceWorker.register('./service-worker.js');
+      console.log('[PWA] Service Worker registered:', reg.scope);
 
+      // ✅ สร้าง popup สำหรับแจ้งอัปเดต
+      const popup = document.createElement('div');
+      popup.id = 'update-popup';
+      popup.style.position = 'fixed';
+      popup.style.bottom = '20px';
+      popup.style.left = '50%';
+      popup.style.transform = 'translateX(-50%)';
+      popup.style.background = '#323232';
+      popup.style.color = '#fff';
+      popup.style.padding = '12px 20px';
+      popup.style.borderRadius = '8px';
+      popup.style.boxShadow = '0 4px 10px rgba(0,0,0,0.3)';
+      popup.style.fontFamily = 'Rubik, sans-serif';
+      popup.style.fontSize = '0.95rem';
+      popup.style.display = 'none';
+      popup.style.zIndex = '9999';
+      document.body.appendChild(popup);
+
+      const showPopup = msg => {
+        popup.textContent = msg;
+        popup.style.display = 'block';
+      };
+
+      const hidePopup = () => {
+        popup.style.display = 'none';
+      };
+
+      // ✅ ตรวจเจอเวอร์ชันใหม่
+      reg.addEventListener('updatefound', () => {
+        const newSW = reg.installing;
+        newSW.addEventListener('statechange', () => {
+          if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
+            console.log('[PWA] 🎯 New version detected, reloading...');
+            showPopup('🔄 พบเวอร์ชันใหม่ กำลังอัปเดต...');
+            setTimeout(() => {
+              window.location.reload();
+            }, 1500);
+          }
+        });
+      });
+
+      // ✅ ถ้ามี waiting SW อยู่แล้ว (มีตัวใหม่แต่ยังไม่ได้ใช้)
+      if (reg.waiting) {
+        showPopup('🆕 อัปเดตเวอร์ชันใหม่...');
+        reg.waiting.postMessage({ action: 'skipWaiting' });
+        setTimeout(() => window.location.reload(), 1500);
+      }
+
+    } catch (err) {
+      console.warn('[PWA] Service Worker registration failed:', err);
+    }
+  });
+}
+</script>
 <script>
   const carImage = document.getElementById("carImage");
   const colorButtons = document.querySelectorAll('.color-btn');
