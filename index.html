@@ -22,25 +22,26 @@
     <h3>⚡ กำลังโหลด AC-EV-Charging-Time...</h3>
   </div>
 
-  <script>
-    // ✅ โหลด Service Worker ก่อนเข้าแอป
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker
-        .register('./service-worker.js')
-        .then(() => {
-          console.log('[SW] Registered');
-          setTimeout(() => {
-            // ไปหน้าแอปหลัก
-            window.location.href = './AC-EV-Charging-Time.html';
-          }, 800);
-        })
-        .catch(err => {
-          console.warn('[SW] Failed', err);
-          window.location.href = './AC-EV-Charging-Time.html';
-        });
-    } else {
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker
+    .register('./service-worker.js')
+    .then(() => {
+      console.log('[SW] Registered — waiting for readiness...');
+      return navigator.serviceWorker.ready; // ✅ รอให้พร้อมจริง
+    })
+    .then(() => {
+      console.log('[SW] Ready — redirecting to app...');
       window.location.href = './AC-EV-Charging-Time.html';
-    }
-  </script>
+    })
+    .catch(err => {
+      console.warn('[SW] Failed:', err);
+      window.location.href = './AC-EV-Charging-Time.html';
+    });
+} else {
+  window.location.href = './AC-EV-Charging-Time.html';
+}
+</script>
+
 </body>
 </html>

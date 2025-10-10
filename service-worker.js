@@ -2,7 +2,7 @@
 // ⚡ AC-EV-Charging-Time Service Worker (Auto-Update v4)
 // ===============================
 
-const CACHE_NAME = 'ev-time-calculator-v4'; // ← เปลี่ยน version ทุกครั้งที่อัปโหลด
+const CACHE_NAME = 'ev-time-calculator-v5'; // ← เปลี่ยน version ทุกครั้งที่อัปโหลด
 const urlsToCache = [
   './index.html',
   './AC-EV-Charging-Time.html',
@@ -50,18 +50,17 @@ self.addEventListener('activate', event => {
           }
         })
       )
-    ).then(() => {
-      // ✅ อัปเดตทุกแท็บให้ใช้ SW ใหม่ทันที
-      return self.clients.claim().then(() => {
-        return self.clients.matchAll({ type: 'window' }).then(clients => {
-          for (const client of clients) {
-            client.navigate(client.url); // รีเฟรชแท็บทั้งหมด
-          }
-        });
-      });
+    ).then(async () => {
+      await self.clients.claim();
+      const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+      for (const client of clients) {
+        // ✅ แจ้งให้หน้าเว็บ reload เอง
+        client.postMessage({ type: 'NEW_VERSION_AVAILABLE' });
+      }
     })
   );
 });
+
 
 // -------------------------------
 // 🌐 FETCH
