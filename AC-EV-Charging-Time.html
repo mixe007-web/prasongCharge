@@ -208,16 +208,23 @@ body {
       padding: 1rem;
       margin-bottom: 1rem;
     }
-    .show-hide-btn {
-      background-color: #28a745;
-      color: white;
-      border: none;
-      cursor: pointer;
-      padding: 10px 20px;
-      border-radius: 8px;
-      font-size: 1rem;
-      transition: 0.3s;
-    }
+.small-button,
+.show-hide-btn {
+  height: 38px;
+  min-height: 38px;
+  padding: 6px 10px;
+  font-size: 0.78rem;
+  border-radius: 8px;
+  line-height: 1;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
     .show-hide-btn:hover {
       background-color: #218838;
     }
@@ -441,12 +448,7 @@ label[for="settingCost"] {
 .modal-content input[type="number"] {
   text-align: center;
 }
-.small-button {
-  font-size: 0.8rem;      
-  padding: 4px 8px;      
-  margin: 2px;           
-  border-radius: 4px;    
-}
+
 #Remaining {
   margin-top: 7px; 
 }
@@ -528,12 +530,49 @@ label[for="settingCost"] {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+.time-containerAA{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+.time-box{
+  flex:1;
+}
+.time-switch{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding-bottom:2px;
+}
+#toggleTimeMode{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  border:none;
+  cursor:pointer;
+  font-size:20px;
+  font-weight:bold;
+  background: linear-gradient(135deg,#007bff,#00c6ff);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition: all 0.25s ease;
+  box-shadow:0 2px 6px rgba(0,0,0,0.2);
+}
+#toggleTimeMode:active{
+  transform: scale(0.92);
+}
+#toggleTimeMode:hover{
+  transform: scale(1.08);
+}
   </style>
 </head>
 <body>
 <div class="container">
   <h2>EV Charging Time Calculator</h2>
-  <img id="carImage" src="https://img5.pic.in.th/file/secure-sv1/AionV-Aurora-Silver.png" alt="AionV" />
+  <img id="carImage" src="https://img2.pic.in.th/AionV-Aurora-Silver.png" alt="AionV" />
   <div id="colorButtons" aria-label="Select Car Color">
     <button class="color-btn" data-color="Alpine-White" title="Alpine White" style="background:#F0F0F0;"></button>
     <button class="color-btn" data-color="Aurora-Silver" title="Aurora Silver" style="background:#C0C0C0;"></button>
@@ -588,7 +627,7 @@ label[for="settingCost"] {
 
   <div class="input-container">
     <div style="flex: 1;">
-      <label for="Remaining">RemainingDistance(km)</label>
+      <label for="Remaining">Distance(km)</label>
       <input type="number" class="neumorphic" id="Remaining" min="0" max="602" placeholder="0 - 602 km"style="margin-top: 6px;">
       <div id="remainingPercentDisplay" style="margin-top:-1rem; color:#f5240c; font-size:0.9rem; text-align:left;"></div>
     </div>
@@ -598,13 +637,22 @@ label[for="settingCost"] {
   <div id="targetDistanceIncreaseDisplay" style="margin-top:-1rem; color:#f5240c; font-size:0.9rem; text-align:left;"></div>
 </div>
   </div>
-  <div class="time-container">
+  <div class="time-containerAA">
   <div class="time-box">
-    <label for="startTime">Start Time Charging</label>
+    <label for="startTime">Start Time</label>
     <input type="time" class="neumorphic" id="startTime">
   </div>
+    <!-- Toggle Button กลาง -->
+  <div class="time-switch">
+<button id="toggleTimeMode"
+onclick="toggleTimeMode()"
+type="button"
+title="Select Time Mode">
+  ⇄
+</button>
+  </div>
   <div class="time-box">
-    <label for="endTime">Finish Time Charging</label> 
+    <label for="endTime">Finish Time</label> 
     <input type="time" class="neumorphic" id="endTime" disabled>
   </div>
 </div>
@@ -620,7 +668,7 @@ label[for="settingCost"] {
     ⏰ Difference in charging time ± 8 minutes<br>	
   </div>
 </div>
-  <button onclick="calculateChargingTime(event)"style="background-color:#c3d9c4;class="small-button">⏰Calculate Time Charging⏰</button>
+  <button onclick="calculateChargingTime(event)" style="background-color:#c3d9c4;" class="small-button">⏰Calculate Time Charging⏰</button>
   <div id="loading" style="color:#007bff; display:none;">...Completed...</div>
   <div id="result"></div>
 <div id="settingsModal" class="modal">
@@ -643,18 +691,18 @@ label[for="settingCost"] {
 </div>
 </div>
   <div class="button-group">
-  <button onclick="downloadCSV()"style="background-color:#cef5d0;"class="small-button">Download History</button> 
-  <button onclick="clearHistory()"style="background-color:#f5d9d3;"class="small-button">Delete All History</button> 
+  <button onclick="downloadCSV()"style="background-color:#cef5d0;"class="small-button">Download History All</button>
+<button onclick="resetForm()" style="background-color:#b9bfb8;"class="small-button">Clear Input value</button>  
   <button class="show-hide-btn" id="showHideBtn" onclick="toggleHistory()">
-    <span id="historyText"class="small-button">Show History</span>
+    <span id="historyText">Show History</span>
   </button>
-  <button onclick="resetForm()" style="background-color:#b9bfb8;"class="small-button">Clear Input value</button>
+  <button onclick="clearHistory()"style="background-color:#f5d9d3;"class="small-button">Delete All History</button> 
 </div>
   <div id="history">
   <h2 class="history-title">Charging History:</h2>
   <ul id="historyList"></ul>
 </div>
-  <div class="footer">Let You Enjoy Using Your Car. Version.2.5</div>
+  <div class="footer">Let You Enjoy Using Your Car. Version.2.7</div>
 </div>
 <script>
 // ✅ ฟัง event จาก Service Worker
@@ -696,13 +744,22 @@ if ('serviceWorker' in navigator) {
     "Volcano-Orange-With-White-Roof": "AionV-Volcano-Orange-With-White-Roof.png",
     "Volcano-Orange": "AionV-Volcano-Orange.png"
   };
-  function setCarImage(filename) {
-    carImage.src = `https://img5.pic.in.th/file/secure-sv1/${filename}`;
+function setCarImage(filename) {
+
+  carImage.src = `https://img5.pic.in.th/file/secure-sv1/${filename}`;
+
+  carImage.onerror = function () {
+
     carImage.onerror = function () {
+
       carImage.onerror = null;
-      carImage.src = `https://img2.pic.in.th/pic/${filename}`;
+
+      carImage.src = `https://img2.pic.in.th/${filename}`;
     };
-  }
+
+    carImage.src = `https://img2.pic.in.th/pic/${filename}`;
+  };
+}
   function selectColor(btn) {
   colorButtons.forEach(b => b.classList.remove('selected'));
   btn.classList.add('selected');
@@ -744,13 +801,45 @@ carImage.addEventListener("touchstart", toggleColorPanel);
 	let chargingLoss = 11;
 	let bufferMinutes = 0; 
 	let costPerKWh = 4;
+let timeMode = "none";
+
+function toggleTimeMode(){
+
+  const startInput = document.getElementById("startTime");
+  const endInput = document.getElementById("endTime");
+  const btn = document.getElementById("toggleTimeMode");
+
+  if(timeMode === "none" || timeMode === "end"){
+
+    timeMode = "start";
+
+    startInput.disabled = false;
+    endInput.disabled = true;
+
+    btn.innerText = "→";
+    btn.title = "Calculate forward from Start Time";
+
+  }else{
+
+    timeMode = "end";
+
+    startInput.disabled = true;
+    endInput.disabled = false;
+
+    btn.innerText = "←";
+    btn.title = "Calculate backward from Finish Time";
+  }
+}
  function calculateChargingTime(event) {
   const button = event?.target || document.querySelector("button[onclick='calculateChargingTime()']");
   button.disabled = true;
   const distanceInput = parseFloat(document.getElementById('Remaining').value);
   const Remaining = (distanceInput * 100) / maxDistanceKm;
   const target = parseFloat(document.getElementById('target').value);
-  const startTime = document.getElementById('startTime').value;
+  const startTimeInput = document.getElementById('startTime').value;
+const endTimeInput = document.getElementById('endTime').value;
+
+let startTime, endTime, isReverse = false;
   const resultDiv = document.getElementById('result');
   const loadingDiv = document.getElementById('loading');
   const distanceoutput = (target * maxDistanceKm) / 100;
@@ -789,12 +878,24 @@ carImage.addEventListener("touchstart", toggleColorPanel);
     button.disabled = false;
     return;
   }
-  if (!startTime) {
+if(timeMode === "start"){
+  if (!startTimeInput) {
     resultDiv.className = "error-message";
-    resultDiv.innerText = "Please select a valid start time (HH:mm format).";
+    resultDiv.innerText = "Please select start time";
     button.disabled = false;
     return;
   }
+  startTime = startTimeInput;
+}else{
+  if (!endTimeInput) {
+    resultDiv.className = "error-message";
+    resultDiv.innerText = "Please select end time";
+    button.disabled = false;
+    return;
+  }
+  endTime = endTimeInput;
+  isReverse = true;
+}
   const effectivePower = chargerPower * (1 - chargingLoss / 100);
   const energyNeeded = (target - Remaining) / 100 * batteryCapacity;
   const timeInHours = (energyNeeded / effectivePower);
@@ -847,14 +948,30 @@ if (Remaining <= 20) {
     console.warn("Charge delta exceeding 100% may be due to error value.");
   }
 }
-  const hours = Math.floor(totalMinutes / 60);
+const hours = Math.floor(totalMinutes / 60);
   const minutes = totalMinutes % 60;
+ let startDate, endDate;
+
+if(!isReverse){
   const [startHour, startMinute] = startTime.split(":").map(Number);
-  const startDate = new Date();
+  startDate = new Date();
   startDate.setHours(startHour, startMinute);
-  const endDate = new Date(startDate.getTime() + totalMinutes * 60 * 1000);
-  const endHour = String(endDate.getHours()).padStart(2, '0');
-  const endMinute = String(endDate.getMinutes()).padStart(2, '0');
+
+  endDate = new Date(startDate.getTime() + totalMinutes * 60 * 1000);
+}else{
+  const [endHour, endMinute] = endTime.split(":").map(Number);
+  endDate = new Date();
+  endDate.setHours(endHour, endMinute);
+
+  startDate = new Date(endDate.getTime() - totalMinutes * 60 * 1000);
+}
+const startHour = String(startDate.getHours()).padStart(2,'0');
+const startMinute = String(startDate.getMinutes()).padStart(2,'0');
+
+const endHour = String(endDate.getHours()).padStart(2,'0');
+const endMinute = String(endDate.getMinutes()).padStart(2,'0');
+startTime = `${startHour}:${startMinute}`;
+endTime = `${endHour}:${endMinute}`;
   const isNextDay = endDate.getDate() !== startDate.getDate();
   const endTimeDisplay = isNextDay ? `${endHour}:${endMinute} (Next Day)` : `${endHour}:${endMinute}`;
   const energyUsed = ((target - Remaining) / 100) * batteryCapacity;
@@ -883,7 +1000,8 @@ if (Remaining <= 20) {
   `;
   loadingDiv.textContent = '<<< ✅ Completed ✅ >>>  ';
   loadingDiv.style.color = 'green';
-  document.getElementById('endTime').value = `${endHour}:${endMinute}`;
+  document.getElementById('startTime').value = startTime;
+document.getElementById('endTime').value = endTime;
   setTimeout(() => {
     loadingDiv.style.display = 'none';
   }, 3000);
@@ -1244,6 +1362,8 @@ window.addEventListener("DOMContentLoaded", () => {
   localStorage.removeItem('dateFilter');
   document.getElementById('fromDate').value = '';
   document.getElementById('toDate').value = '';
+    document.getElementById("startTime").disabled = false;
+  document.getElementById("endTime").disabled = true;
   updateTotalSummary(); 
 });
 if ('serviceWorker' in navigator) {
