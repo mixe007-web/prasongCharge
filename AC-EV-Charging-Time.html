@@ -702,33 +702,8 @@ title="Select Time Mode">
   <h2 class="history-title">Charging History:</h2>
   <ul id="historyList"></ul>
 </div>
-  <div class="footer">Let You Enjoy Using Your Car. Version.2.7</div>
+  <div class="footer">Let You Enjoy Using Your Car. Version.3.0</div>
 </div>
-<script>
-// ✅ ฟัง event จาก Service Worker
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.addEventListener('message', event => {
-    if (event.data && event.data.type === 'NEW_VERSION_AVAILABLE') {
-      const popup = document.createElement('div');
-      popup.textContent = '🔄 พบเวอร์ชันใหม่ กำลังอัปเดต...';
-      Object.assign(popup.style, {
-        position: 'fixed',
-        bottom: '20px',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        background: '#323232',
-        color: '#fff',
-        padding: '12px 20px',
-        borderRadius: '8px',
-        boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
-        zIndex: '9999'
-      });
-      document.body.appendChild(popup);
-      setTimeout(() => location.reload(), 1500);
-    }
-  });
-}
-</script>
 
 <script>
   const carImage = document.getElementById("carImage");
@@ -1366,17 +1341,17 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("endTime").disabled = true;
   updateTotalSummary(); 
 });
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('service-worker.js')
-      .then(registration => {
-        console.log('[PWA] Service Worker registered with scope:', registration.scope);
-      })
-      .catch(error => {
-        console.error('[PWA] Service Worker registration failed:', error);
-      });
-    });
-  }
+if ('serviceWorker' in navigator &&location.protocol !== 'file:') {
+  window.addEventListener('load', async () => {
+    try {
+      const registration = await navigator.serviceWorker.register('./service-worker.js');
+      registration.update();
+      console.log('[PWA] Ready');
+    } catch (err) {
+      console.error('[PWA] SW Error:', err);
+    }
+  });
+}
 </script>
 </body>
 </html>
