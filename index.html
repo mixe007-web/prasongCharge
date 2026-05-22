@@ -3,13 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <base href="/prasongCharge/">
+
   <title>AC-EV-Charging-Time</title>
 
-  <!-- ✅ PWA Manifest -->
+  <!-- PWA -->
   <link rel="manifest" href="./manifest.json" />
 
-  <!-- ✅ Icons -->
+  <!-- Icons -->
   <link rel="icon" href="./icon-192.png" type="image/png" />
   <link rel="apple-touch-icon" href="./icon-512.png" />
 
@@ -18,29 +20,51 @@
 </head>
 
 <body>
-  <div id="loading" style="text-align:center; margin-top:40vh;">
-    <h3>⚡ กำลังโหลด AC-EV-Charging-Time...</h3>
-  </div>
+
+<div id="loading" style="text-align:center; margin-top:40vh;">
+  <h3>⚡ กำลังโหลด AC-EV-Charging-Time...</h3>
+</div>
 
 <script>
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker
-    .register('./service-worker.js')
-    .then(() => {
-      console.log('[SW] Registered — waiting for readiness...');
-      return navigator.serviceWorker.ready; // ✅ รอให้พร้อมจริง
-    })
-    .then(() => {
-      console.log('[SW] Ready — redirecting to app...');
-      window.location.href = './AC-EV-Charging-Time.html';
-    })
-    .catch(err => {
-      console.warn('[SW] Failed:', err);
-      window.location.href = './AC-EV-Charging-Time.html';
-    });
+
+const APP_URL = './AC-EV-Charging-Time.html';
+
+// ✅ ถ้า browser รองรับ SW
+if (
+  'serviceWorker' in navigator &&
+  location.protocol !== 'file:'
+) {
+
+  window.addEventListener('load', async () => {
+
+    try {
+
+      // register SW
+      const registration = await navigator.serviceWorker.register('./service-worker.js');
+
+      console.log('[PWA] Service Worker registered');
+
+      // ✅ เช็ก update ใหม่ทันที
+      registration.update();
+
+    } catch (err) {
+
+      console.warn('[PWA] SW failed:', err);
+
+    }
+
+    // ✅ redirect ทันที
+    window.location.replace(APP_URL);
+
+  });
+
 } else {
-  window.location.href = './AC-EV-Charging-Time.html';
+
+  // browser ไม่รองรับ
+  window.location.replace(APP_URL);
+
 }
+
 </script>
 
 </body>
