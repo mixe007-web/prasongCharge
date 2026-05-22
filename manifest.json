@@ -1,11 +1,15 @@
 {
   "name": "AC EV Charging Time",
   "short_name": "EV Time",
-  "start_url": "/prasongCharge/index.html",
+
+  "start_url": "./index.html",
   "scope": "/prasongCharge/",
+
   "display": "standalone",
+
   "background_color": "#0d6efd",
   "theme_color": "#0d6efd",
+
   "icons": [
     {
       "src": "./icon-192.png",
